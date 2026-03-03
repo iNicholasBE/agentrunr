@@ -19,9 +19,11 @@ public class SetupController {
 
     private static final Logger log = LoggerFactory.getLogger(SetupController.class);
     private final CredentialStore credentialStore;
+    private final WorkspaceInitializer workspaceInitializer;
 
-    public SetupController(CredentialStore credentialStore) {
+    public SetupController(CredentialStore credentialStore, WorkspaceInitializer workspaceInitializer) {
         this.credentialStore = credentialStore;
+        this.workspaceInitializer = workspaceInitializer;
     }
 
     /**
@@ -79,9 +81,13 @@ public class SetupController {
                 credentialStore.setApiKey("agent_model", keys.get("defaultModel"));
             }
 
+            // Initialize workspace with default files
+            String workspacePath = credentialStore.getWorkspacePath();
+            workspaceInitializer.initializeWorkspace(workspacePath);
+
             credentialStore.save();
 
-            log.info("Setup saved via web UI");
+            log.info("Setup saved via web UI, workspace initialized at {}", workspacePath);
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "providers", credentialStore.getProviderStatus()

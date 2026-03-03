@@ -1,5 +1,6 @@
 package io.agentrunr.memory;
 
+import io.agentrunr.setup.CredentialStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,11 @@ public class SQLiteMemoryStore implements Memory {
 
     private static final Logger log = LoggerFactory.getLogger(SQLiteMemoryStore.class);
 
-    private final String dbPath;
+    private String dbPath;
     private Connection connection;
+
+    @Autowired(required = false)
+    private CredentialStore credentialStore;
 
     @Autowired
     public SQLiteMemoryStore(@Value("${memory.path:./data/memory}") String memoryPath) {
@@ -52,6 +56,15 @@ public class SQLiteMemoryStore implements Memory {
 
     @PostConstruct
     public void init() {
+        if (credentialStore != null && credentialStore.isSetupCompleted()) {
+            Path dir = Path.of(credentialStore.getWorkspacePath(), "memory");
+            try {
+                Files.createDirectories(dir);
+            } catch (IOException e) {
+                log.error("Failed to create workspace memory directory: {}", dir, e);
+            }
+            this.dbPath = dir.resolve("brain.db").toString();
+        }
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
             // Enable WAL mode for better concurrent performance

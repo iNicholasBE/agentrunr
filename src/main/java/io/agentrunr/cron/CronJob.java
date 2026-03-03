@@ -3,9 +3,12 @@ package io.agentrunr.cron;
 import io.agentrunr.channel.AgentConfigurer;
 import io.agentrunr.channel.ChannelRegistry;
 import io.agentrunr.core.*;
+import io.agentrunr.setup.CredentialStore;
+import jakarta.annotation.PostConstruct;
 import org.jobrunr.jobs.annotations.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +31,18 @@ public class CronJob {
     private final AgentConfigurer agentConfigurer;
     private final ChannelRegistry channelRegistry;
 
-    @Value("${agent.tasks.path:./workspace/tasks}")
+    @Value("${agent.tasks.path:./workspace-defaults/tasks}")
     private String tasksPath;
+
+    @Autowired(required = false)
+    private CredentialStore credentialStore;
+
+    @PostConstruct
+    void resolveTasksPath() {
+        if (credentialStore != null && credentialStore.isSetupCompleted()) {
+            this.tasksPath = Path.of(credentialStore.getWorkspacePath(), "tasks").toString();
+        }
+    }
 
     public CronJob(AgentRunner agentRunner, AgentConfigurer agentConfigurer,
                    ChannelRegistry channelRegistry) {

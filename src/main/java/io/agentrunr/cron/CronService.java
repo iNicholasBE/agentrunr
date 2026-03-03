@@ -1,9 +1,12 @@
 package io.agentrunr.cron;
 
+import io.agentrunr.setup.CredentialStore;
+import jakarta.annotation.PostConstruct;
 import org.jobrunr.scheduling.JobScheduler;
 import org.jobrunr.storage.StorageProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +31,24 @@ public class CronService {
     private final JobScheduler jobScheduler;
     private final StorageProvider storageProvider;
     private final CronJob cronJob;
-    private final Path tasksDir;
+    private Path tasksDir;
+
+    @Autowired(required = false)
+    private CredentialStore credentialStore;
 
     public CronService(JobScheduler jobScheduler, StorageProvider storageProvider, CronJob cronJob,
-                       @Value("${agent.tasks.path:./workspace/tasks}") String tasksPath) {
+                       @Value("${agent.tasks.path:./workspace-defaults/tasks}") String tasksPath) {
         this.jobScheduler = jobScheduler;
         this.storageProvider = storageProvider;
         this.cronJob = cronJob;
         this.tasksDir = Path.of(tasksPath);
+    }
+
+    @PostConstruct
+    void resolveTasksDir() {
+        if (credentialStore != null && credentialStore.isSetupCompleted()) {
+            this.tasksDir = Path.of(credentialStore.getWorkspacePath(), "tasks");
+        }
         try {
             Files.createDirectories(this.tasksDir);
         } catch (IOException e) {

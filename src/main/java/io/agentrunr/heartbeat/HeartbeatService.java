@@ -1,14 +1,16 @@
 package io.agentrunr.heartbeat;
 
+import io.agentrunr.setup.CredentialStore;
 import org.jobrunr.scheduling.JobScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.nio.file.Path;
 
 /**
  * Manages the heartbeat recurring job via JobRunr.
@@ -33,6 +35,9 @@ public class HeartbeatService {
     @Value("${agent.heartbeat.enabled:true}")
     private boolean enabled;
 
+    @Autowired(required = false)
+    private CredentialStore credentialStore;
+
     public HeartbeatService(JobScheduler jobScheduler, HeartbeatJob heartbeatJob) {
         this.jobScheduler = jobScheduler;
         this.heartbeatJob = heartbeatJob;
@@ -40,6 +45,12 @@ public class HeartbeatService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
+        // Override heartbeat file from user's workspace if configured
+        if (credentialStore != null && credentialStore.isSetupCompleted()) {
+            String workspacePath = credentialStore.getWorkspacePath();
+            heartbeatFile = Path.of(workspacePath, "HEARTBEAT.md").toString();
+        }
+
         if (!enabled) {
             log.info("Heartbeat disabled via configuration");
             return;

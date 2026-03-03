@@ -40,7 +40,7 @@ public class SystemPromptBuilder {
     @Autowired(required = false)
     private CredentialStore credentialStore;
 
-    @Value("${agent.tools.workspace-dir:./workspace}")
+    @Value("${agent.tools.workspace-dir:./workspace-defaults}")
     private String workspaceDir;
 
     // Cached identity content (loaded once at startup, refreshable)

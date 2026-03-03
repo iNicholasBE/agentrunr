@@ -44,7 +44,7 @@ public class BuiltInTools {
     @Value("${agent.tools.restrict-to-workspace:true}")
     private boolean restrictToWorkspace;
 
-    @Value("${agent.tools.workspace-dir:./workspace}")
+    @Value("${agent.tools.workspace-dir:./workspace-defaults}")
     private String workspaceDir;
 
     @Value("${agent.tools.brave-api-key:}")

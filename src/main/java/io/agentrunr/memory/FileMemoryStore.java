@@ -1,7 +1,10 @@
 package io.agentrunr.memory;
 
+import io.agentrunr.setup.CredentialStore;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -38,13 +41,26 @@ public class FileMemoryStore {
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    private final Path basePath;
+    private Path basePath;
+
+    @Autowired(required = false)
+    private CredentialStore credentialStore;
 
     public FileMemoryStore(@Value("${memory.path:./data/memory}") String memoryPath) {
         this.basePath = Path.of(memoryPath);
         ensureDirectory(basePath);
         ensureDirectory(basePath.resolve("sessions"));
         log.info("FileMemoryStore initialized at: {}", basePath.toAbsolutePath());
+    }
+
+    @PostConstruct
+    void resolveWorkspacePath() {
+        if (credentialStore != null && credentialStore.isSetupCompleted()) {
+            this.basePath = Path.of(credentialStore.getWorkspacePath(), "memory");
+            ensureDirectory(basePath);
+            ensureDirectory(basePath.resolve("sessions"));
+            log.info("FileMemoryStore resolved to workspace: {}", basePath.toAbsolutePath());
+        }
     }
 
     /**

@@ -65,13 +65,13 @@ agent:
 
   # Scheduled tasks directory
   tasks:
-    path: ${AGENT_TASKS_PATH:./workspace/tasks}
+    path: ${AGENT_TASKS_PATH:./workspace-defaults/tasks}
 
   # Heartbeat — periodic task check
   heartbeat:
     enabled: ${HEARTBEAT_ENABLED:true}
     interval-minutes: ${HEARTBEAT_INTERVAL:30}
-    file: ${HEARTBEAT_FILE:./workspace/HEARTBEAT.md}
+    file: ${HEARTBEAT_FILE:./workspace-defaults/HEARTBEAT.md}
 
   # Telegram channel
   telegram:
@@ -82,7 +82,7 @@ agent:
   # Built-in tools
   tools:
     restrict-to-workspace: ${TOOLS_RESTRICT_WORKSPACE:true}
-    workspace-dir: ${TOOLS_WORKSPACE:./workspace}
+    workspace-dir: ${TOOLS_WORKSPACE:./workspace-defaults}
     shell-timeout-seconds: ${TOOLS_SHELL_TIMEOUT:30}
     max-output-size: ${TOOLS_MAX_OUTPUT:65536}
     brave-api-key: ${BRAVE_API_KEY:}

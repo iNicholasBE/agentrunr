@@ -48,12 +48,20 @@ public class CredentialStore {
     }
 
     /**
-     * Returns true if any API keys are configured (either in store or env vars).
+     * Returns true if setup has been completed (workspace initialized and at least one provider configured).
      */
     public boolean isConfigured() {
-        return hasKey("openai") || hasKey("anthropic") || hasKey("mistral")
+        boolean hasProvider = hasKey("openai") || hasKey("anthropic") || hasKey("mistral")
                 || hasEnvKey("OPENAI_API_KEY") || hasEnvKey("ANTHROPIC_API_KEY") || hasEnvKey("MISTRAL_API_KEY")
                 || claudeCodeOAuthProvider.getAccessToken().isPresent();
+        return hasProvider && isSetupCompleted();
+    }
+
+    /**
+     * Returns true if the initial setup flow has been completed (workspace initialized).
+     */
+    public boolean isSetupCompleted() {
+        return "true".equals(credentials.get("setup_completed"));
     }
 
     /**

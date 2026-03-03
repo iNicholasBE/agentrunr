@@ -22,10 +22,12 @@ public class SetupRunner implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(SetupRunner.class);
     private final CredentialStore credentialStore;
+    private final WorkspaceInitializer workspaceInitializer;
     private final Environment environment;
 
-    public SetupRunner(CredentialStore credentialStore, Environment environment) {
+    public SetupRunner(CredentialStore credentialStore, WorkspaceInitializer workspaceInitializer, Environment environment) {
         this.credentialStore = credentialStore;
+        this.workspaceInitializer = workspaceInitializer;
         this.environment = environment;
     }
 
@@ -131,10 +133,13 @@ public class SetupRunner implements CommandLineRunner {
             System.out.println();
         }
 
-        // --- Save ---
-        if (credentialStore.isConfigured()) {
+        // --- Save & initialize workspace ---
+        boolean hasProvider = credentialStore.hasKey("openai") || credentialStore.hasKey("anthropic") || credentialStore.hasKey("mistral");
+        if (hasProvider) {
+            workspaceInitializer.initializeWorkspace(wsPath.toString());
             credentialStore.save();
             System.out.println("Credentials encrypted and saved to ~/.agentrunr/credentials.enc");
+            System.out.println("Workspace initialized at " + wsPath);
             System.out.println("Starting AgentRunr...");
         } else {
             System.out.println();

@@ -172,7 +172,7 @@ Registered in ToolRegistry via `@PostConstruct`:
 
 `SystemPromptBuilder` assembles the system prompt every turn in this order:
 
-1. **Identity** — reads `workspace/SOUL.md`, `IDENTITY.md`, `USER.md`, `AGENTS.md`
+1. **Identity** — reads `SOUL.md`, `IDENTITY.md`, `USER.md`, `AGENTS.md` from the user's workspace
 2. **Instructions** — the agent's configured base instructions
 3. **Agent name** — `"Your name is {name}."`
 4. **Relevant Memories** — FTS5 recall based on user's current message (score > 0.1)
