@@ -8,29 +8,9 @@ import java.util.Map;
 /**
  * Configuration properties for MCP (Model Context Protocol) servers.
  *
- * <p>Binds to {@code agent.mcp.servers} in application.yml:</p>
- * <pre>
- * agent:
- *   mcp:
- *     servers:
- *       - name: personal-calendar
- *         url: ${PERSONAL_CALENDAR_MCP_URL:}
- *         password: ${PERSONAL_CALENDAR_MCP_PASSWORD:}
- *         enabled: ${PERSONAL_CALENDAR_MCP_ENABLED:false}
- *       - name: hubspot
- *         url: ${HUBSPOT_MCP_URL:}
- *         headers:
- *           Authorization: "Bearer ${HUBSPOT_MCP_TOKEN:}"
- *         enabled: ${HUBSPOT_MCP_ENABLED:false}
- *       - name: filesystem
- *         transport: stdio
- *         command: npx
- *         args:
- *           - "-y"
- *           - "@modelcontextprotocol/server-filesystem"
- *           - "/tmp"
- *         enabled: true
- * </pre>
+ * <p>MCP servers are configured per-user in {@code mcp-servers.json} in the workspace directory.
+ * See IDENTITY.md for the JSON format. This record also supports application.yml binding
+ * under {@code agent.mcp.servers} for advanced use cases.</p>
  */
 @ConfigurationProperties(prefix = "agent.mcp")
 public record McpProperties(List<McpServerConfig> servers) {

@@ -20,7 +20,7 @@ public class WorkspaceInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(WorkspaceInitializer.class);
 
-    private static final String[] DEFAULT_FILES = {"SOUL.md", "IDENTITY.md", "HEARTBEAT.md"};
+    private static final String[] DEFAULT_FILES = {"SOUL.md", "IDENTITY.md", "HEARTBEAT.md", "mcp-servers.json"};
 
     private final CredentialStore credentialStore;
 

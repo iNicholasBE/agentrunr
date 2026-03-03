@@ -43,16 +43,10 @@ spring:
 
 # Agent configuration
 agent:
-  # MCP (Model Context Protocol) servers
-  # Each server connects to an external tool provider (calendar, CRM, filesystem, etc.)
-  # Supports SSE (HTTP) and stdio (subprocess) transports.
+  # MCP servers are configured per-user in ~/agentrunr-workspace/mcp-servers.json
+  # See IDENTITY.md in your workspace for format and examples.
   mcp:
-    servers:
-      - name: playwright-browser
-        transport: stdio
-        command: npx
-        args: ["-y", "@playwright/mcp", "--headless"]
-        enabled: ${PLAYWRIGHT_ENABLED:false}
+    servers: []
   name: Assistant
   model: gpt-4.1
   instructions: >

@@ -18,9 +18,12 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,6 +70,7 @@ public class McpClientManager {
     @PostConstruct
     void init() {
         connectConfiguredServers();
+        loadWorkspaceServers();
         loadDynamicServers();
         logSummary();
     }
@@ -321,6 +325,81 @@ public class McpClientManager {
                 servers.put(config.name(), new ManagedServer(
                         config.name(), null, config, false, List.of()));
             }
+        }
+    }
+
+    // --- Internal: workspace servers (mcp-servers.json) ---
+
+    private void loadWorkspaceServers() {
+        if (!credentialStore.isSetupCompleted()) return;
+
+        Path mcpFile = Path.of(credentialStore.getWorkspacePath(), "mcp-servers.json");
+        if (!Files.exists(mcpFile)) {
+            log.debug("No workspace MCP config found at {}", mcpFile);
+            return;
+        }
+
+        try {
+            var tree = objectMapper.readTree(Files.readString(mcpFile));
+            var serversNode = tree.get("servers");
+            if (serversNode == null || !serversNode.isArray()) return;
+
+            for (var node : serversNode) {
+                String name = node.has("name") ? node.get("name").asText() : null;
+                if (name == null || name.isBlank()) continue;
+                if (servers.containsKey(name)) {
+                    log.debug("Workspace MCP server '{}' already loaded, skipping", name);
+                    continue;
+                }
+
+                boolean enabled = !node.has("enabled") || node.get("enabled").asBoolean(true);
+                if (!enabled) {
+                    log.debug("Workspace MCP server '{}' is disabled, skipping", name);
+                    continue;
+                }
+
+                String transport = node.has("transport") ? node.get("transport").asText("sse") : "sse";
+                String url = node.has("url") ? node.get("url").asText(null) : null;
+                String password = node.has("password") ? node.get("password").asText(null) : null;
+                String command = node.has("command") ? node.get("command").asText(null) : null;
+
+                List<String> args = new ArrayList<>();
+                if (node.has("args") && node.get("args").isArray()) {
+                    for (var arg : node.get("args")) args.add(arg.asText());
+                }
+
+                Map<String, String> headers = new java.util.HashMap<>();
+                if (node.has("headers") && node.get("headers").isObject()) {
+                    node.get("headers").fields().forEachRemaining(
+                            e -> headers.put(e.getKey(), e.getValue().asText()));
+                }
+
+                Map<String, String> env = new java.util.HashMap<>();
+                if (node.has("env") && node.get("env").isObject()) {
+                    node.get("env").fields().forEachRemaining(
+                            e -> env.put(e.getKey(), e.getValue().asText()));
+                }
+
+                int timeout = node.has("requestTimeoutSeconds")
+                        ? node.get("requestTimeoutSeconds").asInt(30) : 30;
+
+                var config = new McpProperties.McpServerConfig(
+                        name, url, password, headers, true, transport,
+                        command, args, env, timeout);
+
+                try {
+                    McpSyncClient client = createClient(config);
+                    List<String> toolNames = registerTools(name, client);
+                    servers.put(name, new ManagedServer(name, client, config, false, toolNames));
+                    log.info("Connected workspace MCP server '{}' via {} ({} tools)",
+                            name, transport, toolNames.size());
+                } catch (Exception e) {
+                    log.error("Failed to connect workspace MCP server '{}': {}", name, e.getMessage());
+                    servers.put(name, new ManagedServer(name, null, config, false, List.of()));
+                }
+            }
+        } catch (IOException e) {
+            log.error("Failed to read workspace MCP config {}: {}", mcpFile, e.getMessage());
         }
     }
 

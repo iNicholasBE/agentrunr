@@ -1,0 +1,11 @@
+{
+  "servers": [
+    {
+      "name": "playwright-browser",
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp", "--headless"],
+      "enabled": false
+    }
+  ]
+}
