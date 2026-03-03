@@ -1,0 +1,305 @@
+{
+  "groups": [
+    {
+      "name": "jobrunr",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties"
+    },
+    {
+      "name": "jobrunr.background-job-server",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties",
+      "sourceMethod": "getBackgroundJobServer()"
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "sourceMethod": "getCarbonAwareJobProcessing()"
+    },
+    {
+      "name": "jobrunr.background-job-server.metrics",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Metrics",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "sourceMethod": "getMetrics()"
+    },
+    {
+      "name": "jobrunr.dashboard",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Dashboard",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties",
+      "sourceMethod": "getDashboard()"
+    },
+    {
+      "name": "jobrunr.database",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Database",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties",
+      "sourceMethod": "getDatabase()"
+    },
+    {
+      "name": "jobrunr.job-scheduler",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$JobScheduler",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties",
+      "sourceMethod": "getJobScheduler()"
+    },
+    {
+      "name": "jobrunr.jobs",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Jobs",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties",
+      "sourceMethod": "getJobs()"
+    },
+    {
+      "name": "jobrunr.jobs.metrics",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Metrics",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Jobs",
+      "sourceMethod": "getMetrics()"
+    },
+    {
+      "name": "jobrunr.miscellaneous",
+      "type": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Miscellaneous",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties",
+      "sourceMethod": "getMiscellaneous()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "jobrunr.background-job-server.carbon-awaiting-jobs-request-size",
+      "type": "java.lang.Integer",
+      "description": "Sets the maximum number of carbon aware jobs to update from awaiting to scheduled state per database round-trip.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer"
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing.api-client-connect-timeout",
+      "type": "java.time.Duration",
+      "description": "Sets the connect timeout for the API client.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing"
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing.api-client-read-timeout",
+      "type": "java.time.Duration",
+      "description": "Sets the read timeout for the API client.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing"
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing.area-code",
+      "type": "java.lang.String",
+      "description": "Sets the areaCode of your datacenter (the area where your application is hosted) in order to have more accurate carbon emissions forecasts. Cannot be used together with externalCode or externalIdentifier.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing"
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing.data-provider",
+      "type": "java.lang.String",
+      "description": "Sets your preferred carbon intensity forecast dataProvider.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing"
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables carbon aware scheduling.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing",
+      "defaultValue": false
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing.external-code",
+      "type": "java.lang.String",
+      "description": "Sets the code of an area as defined by your specified dataProvider in order to have more accurate carbon emissions forecasts. Cannot be used together with areaCode or externalIdentifier and without dataProvider.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing"
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing.external-identifier",
+      "type": "java.lang.String",
+      "description": "Sets the identifier of an area as defined by your specified dataProvider in order to have more accurate carbon emissions forecasts. Cannot be used together with areaCode or externalCode and without dataProvider.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing"
+    },
+    {
+      "name": "jobrunr.background-job-server.carbon-aware-job-processing.poll-interval-in-minutes",
+      "type": "java.lang.Integer",
+      "description": "Set the carbonAwareJobProcessingPollIntervalInMinutes for the BackgroundJobServer to see whether pending carbon aware jobs need to be scheduled",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$CarbonAwareJobProcessing",
+      "defaultValue": 5
+    },
+    {
+      "name": "jobrunr.background-job-server.delete-succeeded-jobs-after",
+      "type": "java.time.Duration",
+      "description": "Sets the duration to wait before changing jobs that are in the SUCCEEDED state to the DELETED state. If a duration suffix is not specified, hours will be used.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "defaultValue": "36h"
+    },
+    {
+      "name": "jobrunr.background-job-server.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables the background processing of jobs.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "defaultValue": false
+    },
+    {
+      "name": "jobrunr.background-job-server.interrupt-jobs-await-duration-on-stop",
+      "type": "java.time.Duration",
+      "description": "Sets the duration to wait before interrupting threads\/jobs when the server is stopped. If a duration suffix is not specified, seconds will be used.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "defaultValue": "10s"
+    },
+    {
+      "name": "jobrunr.background-job-server.metrics.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Configures whether metrics are reported to MicroMeter.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Metrics",
+      "defaultValue": false
+    },
+    {
+      "name": "jobrunr.background-job-server.name",
+      "type": "java.lang.String",
+      "description": "Allows to set the name of the {@link org.jobrunr.server.BackgroundJobServer} (used in the dashboard).",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer"
+    },
+    {
+      "name": "jobrunr.background-job-server.orphaned-jobs-request-size",
+      "type": "java.lang.Integer",
+      "description": "Sets the maximum number of orphaned jobs to fetch and update per database round-trip (to retry them).",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer"
+    },
+    {
+      "name": "jobrunr.background-job-server.permanently-delete-deleted-jobs-after",
+      "type": "java.time.Duration",
+      "description": "Sets the duration to wait before permanently deleting jobs that are in the DELETED state. If a duration suffix is not specified, hours will be used.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "defaultValue": "72h"
+    },
+    {
+      "name": "jobrunr.background-job-server.poll-interval-in-seconds",
+      "type": "java.lang.Integer",
+      "description": "Set the pollIntervalInSeconds for the BackgroundJobServer to see whether new jobs need to be processed",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "defaultValue": 15
+    },
+    {
+      "name": "jobrunr.background-job-server.scheduled-jobs-request-size",
+      "type": "java.lang.Integer",
+      "description": "Sets the maximum number of jobs to update from scheduled to enqueued state per database round-trip.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer"
+    },
+    {
+      "name": "jobrunr.background-job-server.server-timeout-poll-interval-multiplicand",
+      "type": "java.lang.Integer",
+      "description": "Set the pollInterval multiplicand used to determine when a BackgroundJobServer has timed out and processing jobs are orphaned.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer",
+      "defaultValue": 4
+    },
+    {
+      "name": "jobrunr.background-job-server.succeeded-jobs-request-size",
+      "type": "java.lang.Integer",
+      "description": "Sets the maximum number of jobs to update from succeeded to deleted state per database round-trip.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer"
+    },
+    {
+      "name": "jobrunr.background-job-server.thread-type",
+      "type": "org.jobrunr.server.configuration.BackgroundJobServerThreadType",
+      "description": "Sets the Thread Type for the BackgroundJobServer. By default, this will be determined by the Java version (VirtualThreads as of Java 21).",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer"
+    },
+    {
+      "name": "jobrunr.background-job-server.worker-count",
+      "type": "java.lang.Integer",
+      "description": "Sets the workerCount for the BackgroundJobServer which defines the maximum number of jobs that will be run in parallel. By default, this will be determined by the amount of available processor.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$BackgroundJobServer"
+    },
+    {
+      "name": "jobrunr.dashboard.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables the JobRunr dashboard.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Dashboard",
+      "defaultValue": false
+    },
+    {
+      "name": "jobrunr.dashboard.password",
+      "type": "java.lang.String",
+      "description": "The password for the basic authentication which protects the dashboard. WARNING: this is insecure as it is in clear text",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Dashboard"
+    },
+    {
+      "name": "jobrunr.dashboard.port",
+      "type": "java.lang.Integer",
+      "description": "The port on which the Dashboard should run",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Dashboard",
+      "defaultValue": 8000
+    },
+    {
+      "name": "jobrunr.dashboard.username",
+      "type": "java.lang.String",
+      "description": "The username for the basic authentication which protects the dashboard",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Dashboard"
+    },
+    {
+      "name": "jobrunr.database.database-name",
+      "type": "java.lang.String",
+      "description": "The name of the database to use (only used by MongoDBStorageProvider). By default, it is 'jobrunr'.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Database"
+    },
+    {
+      "name": "jobrunr.database.datasource",
+      "type": "java.lang.String",
+      "description": "An optional named {@link javax.sql.DataSource} to use. Defaults to the 'default' datasource.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Database"
+    },
+    {
+      "name": "jobrunr.database.skip-create",
+      "type": "java.lang.Boolean",
+      "description": "Allows to skip the creation of the tables - this means you should add them manually or by database migration tools like FlywayDB.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Database",
+      "defaultValue": false
+    },
+    {
+      "name": "jobrunr.database.table-prefix",
+      "type": "java.lang.String",
+      "description": "Allows to set the table prefix used by JobRunr",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Database"
+    },
+    {
+      "name": "jobrunr.database.type",
+      "type": "java.lang.String",
+      "description": "If multiple types of databases are available in the Spring Context (e.g. a DataSource and an MongoDB Client), this setting allows to specify the type of database for JobRunr to use. Valid values are 'sql', 'mongodb' and 'mem'.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Database"
+    },
+    {
+      "name": "jobrunr.job-scheduler.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables the scheduling of jobs.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$JobScheduler",
+      "defaultValue": true
+    },
+    {
+      "name": "jobrunr.job-scheduler.job-details-generator",
+      "type": "java.lang.String",
+      "description": "Defines the JobDetailsGenerator to use. This should be the fully qualified classname of the JobDetailsGenerator, and it should have a default no-argument constructor.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$JobScheduler"
+    },
+    {
+      "name": "jobrunr.jobs.default-number-of-retries",
+      "type": "java.lang.Integer",
+      "description": "Configures the default amount of retries.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Jobs"
+    },
+    {
+      "name": "jobrunr.jobs.metrics.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Configures whether metrics are reported to MicroMeter.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Metrics",
+      "defaultValue": false
+    },
+    {
+      "name": "jobrunr.jobs.retry-back-off-time-seed",
+      "type": "java.lang.Integer",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Jobs"
+    },
+    {
+      "name": "jobrunr.miscellaneous.allow-anonymous-data-usage",
+      "type": "java.lang.Boolean",
+      "description": "Allows to opt-out of anonymous usage statistics. This setting is true by default and sends only the total amount of succeeded jobs processed by your cluster per day to show a counter on the JobRunr website for marketing purposes.",
+      "sourceType": "org.jobrunr.spring.autoconfigure.JobRunrProperties$Miscellaneous",
+      "defaultValue": true
+    }
+  ],
+  "hints": [],
+  "ignored": {
+    "properties": []
+  }
+}

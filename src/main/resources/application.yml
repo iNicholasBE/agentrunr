@@ -1,0 +1,117 @@
+spring:
+  application:
+    name: agentrunr
+  autoconfigure:
+    exclude:
+      - ${EXCLUDE_OLLAMA:org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration}
+      - ${EXCLUDE_ANTHROPIC:org.springframework.ai.model.anthropic.autoconfigure.AnthropicChatAutoConfiguration}
+      - ${EXCLUDE_MISTRAL:org.springframework.ai.model.mistralai.autoconfigure.MistralAiChatAutoConfiguration}
+      - ${EXCLUDE_MISTRAL_EMBEDDING:org.springframework.ai.model.mistralai.autoconfigure.MistralAiEmbeddingAutoConfiguration}
+      - ${EXCLUDE_MISTRAL_MODERATION:org.springframework.ai.model.mistralai.autoconfigure.MistralAiModerationAutoConfiguration}
+      - ${EXCLUDE_OPENAI:org.springframework.ai.model.openai.autoconfigure.OpenAiChatAutoConfiguration}
+      - ${EXCLUDE_OPENAI_AUDIO_SPEECH:org.springframework.ai.model.openai.autoconfigure.OpenAiAudioSpeechAutoConfiguration}
+      - ${EXCLUDE_OPENAI_AUDIO_TRANSCRIPTION:org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration}
+      - ${EXCLUDE_OPENAI_EMBEDDING:org.springframework.ai.model.openai.autoconfigure.OpenAiEmbeddingAutoConfiguration}
+      - ${EXCLUDE_OPENAI_IMAGE:org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration}
+      - ${EXCLUDE_OPENAI_MODERATION:org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration}
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-4.1
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      init:
+        chat:
+          include: ${OLLAMA_ENABLED:false}
+      chat:
+        options:
+          model: ${OLLAMA_MODEL:llama3.2}
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      enabled: ${ANTHROPIC_ENABLED:false}
+      chat:
+        options:
+          model: claude-sonnet-4-20250514
+    mistralai:
+      api-key: ${MISTRAL_API_KEY:}
+      enabled: ${MISTRAL_ENABLED:false}
+      chat:
+        options:
+          model: mistral-medium-latest
+
+# Agent configuration
+agent:
+  # MCP (Model Context Protocol) servers
+  # Each server connects to an external tool provider (calendar, CRM, filesystem, etc.)
+  # Supports SSE (HTTP) and stdio (subprocess) transports.
+  mcp:
+    servers:
+      - name: playwright-browser
+        transport: stdio
+        command: npx
+        args: ["-y", "@playwright/mcp", "--headless"]
+        enabled: ${PLAYWRIGHT_ENABLED:false}
+  name: Assistant
+  model: gpt-4.1
+  instructions: >
+    You are a helpful AI assistant powered by AgentRunr.
+    You can use tools to help users accomplish tasks.
+    Be concise and helpful.
+
+  # Claude Code OAuth — auto-detected from system keychain / ~/.claude/.credentials.json
+  # Run 'claude auth login' to enable. No manual config needed.
+
+  # Scheduled tasks directory
+  tasks:
+    path: ${AGENT_TASKS_PATH:./workspace/tasks}
+
+  # Heartbeat — periodic task check
+  heartbeat:
+    enabled: ${HEARTBEAT_ENABLED:true}
+    interval-minutes: ${HEARTBEAT_INTERVAL:30}
+    file: ${HEARTBEAT_FILE:./workspace/HEARTBEAT.md}
+
+  # Telegram channel
+  telegram:
+    enabled: ${TELEGRAM_ENABLED:false}
+    token: ${TELEGRAM_BOT_TOKEN:}
+    allowed-users: ${TELEGRAM_ALLOWED_USERS:}
+
+  # Built-in tools
+  tools:
+    restrict-to-workspace: ${TOOLS_RESTRICT_WORKSPACE:true}
+    workspace-dir: ${TOOLS_WORKSPACE:./workspace}
+    shell-timeout-seconds: ${TOOLS_SHELL_TIMEOUT:30}
+    max-output-size: ${TOOLS_MAX_OUTPUT:65536}
+    brave-api-key: ${BRAVE_API_KEY:}
+
+# JobRunr configuration
+jobrunr:
+  background-job-server:
+    enabled: true
+  dashboard:
+    enabled: true
+    port: 8000
+  database:
+    url: jdbc:sqlite:./data/jobrunr.db?journal_mode=WAL&busy_timeout=5000
+  misc:
+    allow-anonymous-data-usage: false
+
+# Memory
+memory:
+  path: ${AGENT_MEMORY_PATH:./data/memory}
+  sqlite:
+    enabled: true
+
+# Server
+server:
+  port: ${SERVER_PORT:8090}
+
+# Logging
+logging:
+  level:
+    io.agentrunr: DEBUG
+    org.springframework.ai: INFO
+    

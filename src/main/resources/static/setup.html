@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentRunr — Setup</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .setup-container {
+            max-width: 520px;
+            margin: 60px auto;
+            padding: 40px;
+            background: var(--bg-secondary, #1e1e2e);
+            border-radius: 16px;
+            border: 1px solid var(--border, #333);
+        }
+        .setup-title {
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+        .setup-subtitle {
+            text-align: center;
+            color: var(--text-muted, #888);
+            margin-bottom: 32px;
+        }
+        .setup-section {
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border, #333);
+        }
+        .setup-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 12px;
+        }
+        .setup-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted, #888);
+            margin-bottom: 16px;
+        }
+        .setup-field {
+            margin-bottom: 20px;
+        }
+        .setup-field:last-child {
+            margin-bottom: 0;
+        }
+        .setup-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary, #e0e0e0);
+        }
+        .setup-field input, .setup-field select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border, #444);
+            background: var(--bg-primary, #121220);
+            color: var(--text-primary, #e0e0e0);
+            font-family: monospace;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        .setup-field select {
+            font-family: inherit;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
+        .setup-field input:focus, .setup-field select:focus {
+            outline: none;
+            border-color: var(--accent, #7c5cff);
+        }
+        .setup-field .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted, #666);
+            margin-top: 4px;
+        }
+        .provider-status {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 0.9rem;
+        }
+        .provider-status.ok { color: #4caf50; }
+        .provider-status.fail { color: #f44336; }
+        .setup-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            background: var(--accent, #7c5cff);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .setup-btn:hover { opacity: 0.9; }
+        .setup-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .setup-message {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.9rem;
+        }
+        .setup-message.success { color: #4caf50; }
+        .setup-message.error { color: #f44336; }
+        .setup-skip {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .setup-skip a {
+            color: var(--text-muted, #888);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        .setup-skip a:hover { color: var(--text-primary, #e0e0e0); }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1 class="setup-title"><img src="/logo.png" alt="AgentRunr" style="height: 36px;"></h1>
+        <p class="setup-subtitle">Let's get you set up</p>
+
+        <!-- Workspace -->
+        <div class="setup-section">
+            <div class="setup-section-title">Workspace</div>
+            <div class="setup-field">
+                <label>Workspace Folder</label>
+                <input type="text" id="workspacePath" placeholder="">
+                <div class="hint">Folder where AgentRunr stores files, scripts, and identity files</div>
+            </div>
+        </div>
+
+        <!-- AI Providers -->
+        <div class="setup-section">
+            <div class="setup-section-title">AI Providers (at least one required)</div>
+            <div class="setup-field">
+                <label>
+                    OpenAI API Key
+                    <span class="provider-status" id="openaiStatus"></span>
+                </label>
+                <input type="password" id="openaiKey" placeholder="sk-...">
+                <div class="hint">Get yours at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></div>
+            </div>
+
+            <div class="setup-field">
+                <label>
+                    Anthropic API Key
+                    <span class="provider-status" id="anthropicStatus"></span>
+                </label>
+                <input type="password" id="anthropicKey" placeholder="sk-ant-...">
+                <div class="hint">Get yours at <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a></div>
+            </div>
+
+            <div class="setup-field">
+                <label>
+                    Mistral AI API Key
+                    <span class="provider-status" id="mistralStatus"></span>
+                </label>
+                <input type="password" id="mistralKey" placeholder="...">
+                <div class="hint">Get yours at <a href="https://console.mistral.ai/" target="_blank">console.mistral.ai</a></div>
+            </div>
+        </div>
+
+        <!-- Default Model -->
+        <div class="setup-section">
+            <div class="setup-section-title">Default Model</div>
+            <div class="setup-field">
+                <label>Model</label>
+                <select id="defaultModel">
+                    <option value="" disabled selected>Enter an API key above first</option>
+                </select>
+                <div class="hint">The AI model AgentRunr will use by default</div>
+            </div>
+        </div>
+
+        <!-- Channels -->
+        <div class="setup-section">
+            <div class="setup-section-title">Channels (optional)</div>
+            <div class="setup-field">
+                <label>
+                    Telegram Bot Token
+                    <span class="provider-status" id="telegramStatus"></span>
+                </label>
+                <input type="password" id="telegramToken" placeholder="">
+                <div class="hint">Get from <a href="https://t.me/BotFather" target="_blank">@BotFather</a> on Telegram</div>
+            </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="setup-section">
+            <div class="setup-section-title">Tools (optional)</div>
+            <div class="setup-field">
+                <label>
+                    Brave Search API Key
+                    <span class="provider-status" id="braveSearchStatus"></span>
+                </label>
+                <input type="password" id="braveApiKey" placeholder="BSA...">
+                <div class="hint">Get yours at <a href="https://brave.com/search/api/" target="_blank">brave.com/search/api</a> — enables the web_search tool</div>
+            </div>
+        </div>
+
+        <button class="setup-btn" id="saveBtn" onclick="saveSetup()">Save &amp; Connect</button>
+        <div class="setup-message" id="message"></div>
+
+        <div class="setup-skip">
+            <a href="/">← Back to chat (if already configured)</a>
+        </div>
+    </div>
+
+    <script>
+        const modelOptions = {
+            openai: { value: 'openai:gpt-4.1', label: 'OpenAI — gpt-4.1' },
+            anthropic: { value: 'anthropic:claude-sonnet-4-20250514', label: 'Anthropic — claude-sonnet-4' },
+            mistral: { value: 'mistral:mistral-medium-latest', label: 'Mistral — mistral-medium-latest' }
+        };
+
+        function updateModelDropdown() {
+            const select = document.getElementById('defaultModel');
+            const openai = document.getElementById('openaiKey').value.trim();
+            const anthropic = document.getElementById('anthropicKey').value.trim();
+            const mistral = document.getElementById('mistralKey').value.trim();
+
+            const previousValue = select.value;
+            select.innerHTML = '';
+
+            let hasOptions = false;
+            if (openai) { addOption(select, modelOptions.openai); hasOptions = true; }
+            if (anthropic) { addOption(select, modelOptions.anthropic); hasOptions = true; }
+            if (mistral) { addOption(select, modelOptions.mistral); hasOptions = true; }
+
+            if (!hasOptions) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.disabled = true;
+                opt.selected = true;
+                opt.textContent = 'Enter an API key above first';
+                select.appendChild(opt);
+            } else if (previousValue) {
+                select.value = previousValue;
+                if (!select.value) select.selectedIndex = 0;
+            }
+        }
+
+        function addOption(select, opt) {
+            const el = document.createElement('option');
+            el.value = opt.value;
+            el.textContent = opt.label;
+            select.appendChild(el);
+        }
+
+        // Listen for API key changes to update model dropdown
+        ['openaiKey', 'anthropicKey', 'mistralKey'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateModelDropdown);
+        });
+
+        async function loadStatus() {
+            try {
+                const res = await fetch('/api/setup/status');
+                const data = await res.json();
+                updateStatus('openaiStatus', data.providers.openai);
+                updateStatus('anthropicStatus', data.providers.anthropic);
+                updateStatus('mistralStatus', data.providers.mistral);
+                updateStatus('braveSearchStatus', data.providers.braveSearch);
+                updateStatus('telegramStatus', data.providers.telegram);
+
+                // Set default workspace path
+                if (data.defaultWorkspacePath) {
+                    document.getElementById('workspacePath').placeholder = data.defaultWorkspacePath;
+                }
+            } catch (e) {
+                console.error('Failed to load status', e);
+            }
+        }
+
+        function updateStatus(id, configured) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (configured) {
+                el.textContent = 'Connected';
+                el.className = 'provider-status ok';
+            } else {
+                el.textContent = 'Not configured';
+                el.className = 'provider-status fail';
+            }
+        }
+
+        async function saveSetup() {
+            const btn = document.getElementById('saveBtn');
+            const msg = document.getElementById('message');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            msg.textContent = '';
+
+            const body = {};
+
+            // Workspace
+            const workspace = document.getElementById('workspacePath').value.trim();
+            if (workspace) {
+                body.workspacePath = workspace;
+            } else {
+                // Use the placeholder (default path) if empty
+                const placeholder = document.getElementById('workspacePath').placeholder;
+                if (placeholder) body.workspacePath = placeholder;
+            }
+
+            // API keys
+            const openai = document.getElementById('openaiKey').value.trim();
+            const anthropic = document.getElementById('anthropicKey').value.trim();
+            const mistral = document.getElementById('mistralKey').value.trim();
+            const brave = document.getElementById('braveApiKey').value.trim();
+            if (openai) body.openai = openai;
+            if (anthropic) body.anthropic = anthropic;
+            if (mistral) body.mistral = mistral;
+            if (brave) body.braveApiKey = brave;
+
+            // Model
+            const model = document.getElementById('defaultModel').value;
+            if (model) body.defaultModel = model;
+
+            // Telegram
+            const telegram = document.getElementById('telegramToken').value.trim();
+            if (telegram) body.telegramToken = telegram;
+
+            if (!openai && !anthropic && !mistral) {
+                msg.textContent = 'Please enter at least one AI provider API key.';
+                msg.className = 'setup-message error';
+                btn.disabled = false;
+                btn.textContent = 'Save & Connect';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/setup/save', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    msg.textContent = 'Saved and encrypted! Redirecting...';
+                    msg.className = 'setup-message success';
+                    setTimeout(() => window.location.href = '/', 1500);
+                } else {
+                    msg.textContent = 'Error: ' + (data.error || 'Unknown error');
+                    msg.className = 'setup-message error';
+                }
+            } catch (e) {
+                msg.textContent = 'Connection error: ' + e.message;
+                msg.className = 'setup-message error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Save & Connect';
+        }
+
+        loadStatus();
+    </script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentRunr</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="app">
+        <nav class="sidebar">
+            <div class="logo">
+                <h1><img src="/logo.png" alt="AgentRunr" style="height: 50px;"></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active" data-view="chat">💬 Chat</a></li>
+                <li><a href="#" class="nav-link" data-view="jobs">📊 Jobs</a></li>
+                <li><a href="#" class="nav-link" data-view="settings">⚙️ Settings</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Connecting...</span>
+                </div>
+            </div>
+        </nav>
+
+        <main class="content">
+            <!-- Chat View -->
+            <div id="chatView" class="view active">
+                <div class="chat-header">
+                    <h2 id="agentName">Assistant</h2>
+                    <div class="model-badge" id="modelBadge">gpt-4.1</div>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message system">
+                        <div class="message-content">
+                            Welcome! Type a message to start chatting with the agent.
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <div class="input-row">
+                        <select id="modelSelect" class="model-select">
+                            <optgroup label="OpenAI">
+                                <option value="gpt-4.1" selected>GPT-4.1</option>
+                                <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+                                <option value="gpt-4.1-nano">GPT-4.1 Nano</option>
+                                <option value="o3">o3</option>
+                                <option value="o4-mini">o4-mini</option>
+                            </optgroup>
+                            <optgroup label="Anthropic">
+                                <option value="anthropic:claude-sonnet-4-20250514">Claude Sonnet</option>
+                                <option value="anthropic:claude-opus-4-20250514">Claude Opus</option>
+                            </optgroup>
+                            <optgroup label="Mistral AI">
+                                <option value="mistral:mistral-large-latest">Mistral Large</option>
+                                <option value="mistral:mistral-medium-latest">Mistral Medium</option>
+                                <option value="mistral:mistral-small-latest">Mistral Small</option>
+                                <option value="mistral:codestral-latest">Codestral</option>
+                            </optgroup>
+                            <optgroup label="Ollama (Local)">
+                                <option value="ollama:llama3.2">Llama 3.2</option>
+                                <option value="ollama:deepseek-r1">DeepSeek R1</option>
+                                <option value="ollama:qwen2.5">Qwen 2.5</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <textarea id="chatInput" placeholder="Type your message..." rows="1"></textarea>
+                        <label class="stream-toggle" title="Enable streaming responses">
+                            <input type="checkbox" id="streamToggle" checked> Stream
+                        </label>
+                        <button id="sendBtn" class="send-btn">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="view">
+                <div class="settings-header">
+                    <h2>⚙️ Settings</h2>
+                </div>
+                <div class="settings-content">
+                    <div class="settings-section">
+                        <h3>Agent Configuration</h3>
+                        <div class="setting-group">
+                            <label for="settingAgentName">Agent Name</label>
+                            <input type="text" id="settingAgentName" value="Assistant">
+                        </div>
+                        <div class="setting-group">
+                            <label for="settingModel">Default Model</label>
+                            <select id="settingModel">
+                                <optgroup label="OpenAI">
+                                    <option value="gpt-4.1">GPT-4.1</option>
+                                    <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+                                    <option value="gpt-4.1-nano">GPT-4.1 Nano</option>
+                                    <option value="o3">o3</option>
+                                    <option value="o4-mini">o4-mini</option>
+                                </optgroup>
+                                <optgroup label="Anthropic">
+                                    <option value="anthropic:claude-sonnet-4-20250514">Claude Sonnet</option>
+                                    <option value="anthropic:claude-opus-4-20250514">Claude Opus</option>
+                                </optgroup>
+                                <optgroup label="Mistral AI">
+                                    <option value="mistral:mistral-large-latest">Mistral Large</option>
+                                    <option value="mistral:mistral-medium-latest">Mistral Medium</option>
+                                    <option value="mistral:mistral-small-latest">Mistral Small</option>
+                                    <option value="mistral:codestral-latest">Codestral</option>
+                                </optgroup>
+                                <optgroup label="Ollama">
+                                    <option value="ollama:llama3.2">Llama 3.2</option>
+                                    <option value="ollama:deepseek-r1">DeepSeek R1</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label for="settingFallbackModel">Fallback Model</label>
+                            <select id="settingFallbackModel">
+                                <option value="">None</option>
+                                <optgroup label="OpenAI">
+                                    <option value="gpt-4.1">GPT-4.1</option>
+                                    <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+                                    <option value="gpt-4.1-nano">GPT-4.1 Nano</option>
+                                    <option value="o3">o3</option>
+                                    <option value="o4-mini">o4-mini</option>
+                                </optgroup>
+                                <optgroup label="Anthropic">
+                                    <option value="anthropic:claude-sonnet-4-20250514">Claude Sonnet</option>
+                                    <option value="anthropic:claude-opus-4-20250514">Claude Opus</option>
+                                </optgroup>
+                                <optgroup label="Mistral AI">
+                                    <option value="mistral:mistral-large-latest">Mistral Large</option>
+                                    <option value="mistral:mistral-medium-latest">Mistral Medium</option>
+                                    <option value="mistral:mistral-small-latest">Mistral Small</option>
+                                    <option value="mistral:codestral-latest">Codestral</option>
+                                </optgroup>
+                                <optgroup label="Ollama">
+                                    <option value="ollama:llama3.2">Llama 3.2</option>
+                                    <option value="ollama:deepseek-r1">DeepSeek R1</option>
+                                </optgroup>
+                            </select>
+                            <span class="help-text">Used when the default model is unavailable</span>
+                        </div>
+                        <div class="setting-group">
+                            <label for="settingInstructions">System Instructions</label>
+                            <textarea id="settingInstructions" rows="5">You are a helpful AI assistant powered by AgentRunr. You can use tools to help users accomplish tasks. Be concise and helpful.</textarea>
+                        </div>
+                        <div class="setting-group">
+                            <label for="settingMaxTurns">Max Turns</label>
+                            <input type="number" id="settingMaxTurns" value="10" min="1" max="50">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>API Providers</h3>
+                        <div id="providerList" class="provider-list">
+                            <div class="provider-row" data-provider="openai">
+                                <div class="provider-row-header">
+                                    <span class="provider-dot" id="dotOpenai"></span>
+                                    <span class="provider-label">OpenAI</span>
+                                    <span class="provider-masked" id="maskedOpenai"></span>
+                                </div>
+                                <div class="provider-row-input">
+                                    <input type="password" id="keyOpenai" placeholder="sk-...">
+                                    <button class="btn-primary btn-sm" data-save-provider="openai">Save</button>
+                                </div>
+                                <span class="help-text">Get a key at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></span>
+                            </div>
+                            <div class="provider-row" data-provider="anthropic">
+                                <div class="provider-row-header">
+                                    <span class="provider-dot" id="dotAnthropic"></span>
+                                    <span class="provider-label">Anthropic</span>
+                                    <span class="provider-masked" id="maskedAnthropic"></span>
+                                </div>
+                                <div class="provider-row-input">
+                                    <input type="password" id="keyAnthropic" placeholder="sk-ant-...">
+                                    <button class="btn-primary btn-sm" data-save-provider="anthropic">Save</button>
+                                </div>
+                                <span class="help-text">Get a key at <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a></span>
+                            </div>
+                            <div class="provider-row" data-provider="mistral">
+                                <div class="provider-row-header">
+                                    <span class="provider-dot" id="dotMistral"></span>
+                                    <span class="provider-label">Mistral AI</span>
+                                    <span class="provider-masked" id="maskedMistral"></span>
+                                </div>
+                                <div class="provider-row-input">
+                                    <input type="password" id="keyMistral" placeholder="...">
+                                    <button class="btn-primary btn-sm" data-save-provider="mistral">Save</button>
+                                </div>
+                                <span class="help-text">Get a key at <a href="https://console.mistral.ai/" target="_blank">console.mistral.ai</a></span>
+                            </div>
+                            <div class="provider-row" data-provider="ollama">
+                                <div class="provider-row-header">
+                                    <span class="provider-dot" id="dotOllama"></span>
+                                    <span class="provider-label">Ollama (Local)</span>
+                                    <span class="provider-masked" id="maskedOllama"></span>
+                                </div>
+                                <span class="help-text">Auto-detected at localhost:11434. No API key required.</span>
+                            </div>
+                        </div>
+                        <span class="help-text" style="margin-top: 12px; display: block;">Changing an API key requires an app restart to take effect.</span>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Tools & Integrations</h3>
+                        <div class="setting-group">
+                            <label for="braveApiKeyInput">Web Search (Brave) API Key</label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <input type="password" id="braveApiKeyInput" placeholder="BSA..." style="flex: 1;">
+                                <span id="braveToolStatus" class="tool-status"></span>
+                            </div>
+                            <span class="help-text">Enables the web_search tool. Get a key at <a href="https://brave.com/search/api/" target="_blank">brave.com/search/api</a></span>
+                            <div style="margin-top: 8px;">
+                                <button id="saveBraveKeyBtn" class="btn-primary">Save Brave Key</button>
+                            </div>
+                        </div>
+                        <div class="setting-group" style="margin-top: 16px;">
+                            <label>Browser Automation (Playwright)</label>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="playwrightToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span id="playwrightStatus" class="tool-status"></span>
+                            </div>
+                            <span class="help-text">Enables browser automation via Playwright MCP server (requires npx)</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Telegram Bot</h3>
+                        <div class="setting-group">
+                            <label for="telegramToken">Bot Token</label>
+                            <input type="password" id="telegramToken" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
+                            <span class="help-text">Get a token from <a href="https://t.me/BotFather" target="_blank">@BotFather</a> on Telegram</span>
+                        </div>
+                        <div class="setting-group">
+                            <label for="telegramAllowedUsers">Allowed User IDs</label>
+                            <input type="text" id="telegramAllowedUsers" placeholder="123456789,987654321">
+                            <span class="help-text">Comma-separated Telegram user IDs. Leave empty to allow all users.</span>
+                        </div>
+                        <div class="telegram-status" id="telegramStatus"></div>
+                        <div class="setting-group" style="margin-top: 12px;">
+                            <button id="saveTelegramBtn" class="btn-primary">Save Telegram Settings</button>
+                            <span class="help-text" style="margin-top: 8px; display: block;">Requires app restart for changes to take effect.</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>MCP Servers</h3>
+                        <div id="mcpServerList" class="mcp-server-list">
+                            <p class="muted">Loading MCP servers...</p>
+                        </div>
+                        <details class="mcp-add-form">
+                            <summary>Add MCP Server</summary>
+                            <div class="setting-group">
+                                <label for="mcpName">Server Name</label>
+                                <input type="text" id="mcpName" placeholder="my-server">
+                            </div>
+                            <div class="setting-group">
+                                <label for="mcpUrl">SSE Endpoint URL</label>
+                                <input type="text" id="mcpUrl" placeholder="https://host/path/sse">
+                                <span class="help-text">URL must end with /sse for MCP SSE transport</span>
+                            </div>
+                            <div class="setting-group">
+                                <label for="mcpAuthHeader">Auth Header Name <span class="muted">(optional)</span></label>
+                                <input type="text" id="mcpAuthHeader" placeholder="Authorization">
+                            </div>
+                            <div class="setting-group">
+                                <label for="mcpAuthValue">Auth Header Value <span class="muted">(optional)</span></label>
+                                <input type="password" id="mcpAuthValue" placeholder="Bearer token or password">
+                            </div>
+                            <div class="setting-group" style="margin-top: 12px;">
+                                <button id="addMcpServerBtn" class="btn-primary">Save MCP Server</button>
+                                <span class="help-text" style="margin-top: 8px; display: block;">Requires app restart for the server to connect.</span>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Memory</h3>
+                        <div id="sessionList" class="session-list">
+                            <p class="muted">Loading sessions...</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Administration</h3>
+                        <div class="setting-group">
+                            <label>Application Restart</label>
+                            <span class="help-text">Restart AgentRunr to apply configuration changes (MCP servers, Telegram, etc.). Requires a process manager to auto-restart.</span>
+                            <div style="margin-top: 8px;">
+                                <button id="restartBtn" class="btn-danger">&#x27F3; Restart AgentRunr</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button id="saveSettingsBtn" class="btn-primary">Save Settings</button>
+                        <button id="clearChatBtn" class="btn-secondary">Clear Chat History</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs View -->
+            <div id="jobsView" class="view">
+                <div class="settings-header">
+                    <h2>📊 Jobs</h2>
+                </div>
+                <div class="settings-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statTotal">-</div>
+                            <div class="stat-label">Background Jobs Ran</div>
+                        </div>
+                        <div class="stat-card stat-success">
+                            <div class="stat-number" id="statSucceeded">-</div>
+                            <div class="stat-label">Succeeded</div>
+                        </div>
+                        <div class="stat-card stat-failed">
+                            <div class="stat-number" id="statFailed">-</div>
+                            <div class="stat-label">Failed</div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Recurring Jobs</h3>
+                        <div id="recurringJobsList">
+                            <p class="muted">Loading recurring jobs...</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Full Dashboard</h3>
+                        <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+                            The JobRunr Dashboard gives you a complete overview of all job activity:
+                            scheduled jobs waiting to run, jobs currently processing, failed jobs with
+                            stack traces for debugging, and a full history of succeeded jobs. You can
+                            also retry failed jobs, delete stuck jobs, and monitor server health.
+                        </p>
+                        <a href="http://localhost:8000/dashboard" target="_blank" class="btn-primary" style="display: inline-block; text-decoration: none;">
+                            Open Full Dashboard &#x2197;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
