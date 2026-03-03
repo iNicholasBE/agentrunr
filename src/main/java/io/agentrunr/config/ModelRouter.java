@@ -74,7 +74,13 @@ public class ModelRouter {
             return new ResolvedModel(defaultModel, "gpt-4.1", "openai");
         }
 
-        // Check for provider prefix
+        // Bare provider name (e.g. "openai", "anthropic", "mistral")
+        String lower = modelSpec.toLowerCase();
+        if (!modelSpec.contains(":") && providers.containsKey(lower)) {
+            return new ResolvedModel(providers.get(lower), defaultModelName(lower), lower);
+        }
+
+        // Check for provider prefix (e.g. "openai:gpt-4.1")
         int colonIdx = modelSpec.indexOf(':');
         if (colonIdx > 0) {
             String provider = modelSpec.substring(0, colonIdx).toLowerCase();
@@ -87,7 +93,6 @@ public class ModelRouter {
         }
 
         // Auto-detect provider from model name
-        String lower = modelSpec.toLowerCase();
         if (lower.startsWith("gpt-") || lower.startsWith("o1") || lower.startsWith("o3") || lower.startsWith("o4") || lower.startsWith("o5")) {
             return new ResolvedModel(providers.get("openai"), modelSpec, "openai");
         }
@@ -110,6 +115,16 @@ public class ModelRouter {
      */
     public ChatModel getDefault() {
         return defaultModel;
+    }
+
+    private String defaultModelName(String provider) {
+        return switch (provider) {
+            case "openai" -> "gpt-4.1";
+            case "anthropic" -> "claude-sonnet-4-20250514";
+            case "mistral" -> "mistral-medium-latest";
+            case "ollama" -> "llama3";
+            default -> provider;
+        };
     }
 
     /**

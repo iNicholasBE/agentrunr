@@ -172,15 +172,15 @@
             </div>
         </div>
 
-        <!-- Default Model -->
+        <!-- Default Provider -->
         <div class="setup-section">
-            <div class="setup-section-title">Default Model</div>
+            <div class="setup-section-title">Default AI Provider</div>
             <div class="setup-field">
-                <label>Model</label>
-                <select id="defaultModel">
+                <label>Provider</label>
+                <select id="defaultProvider">
                     <option value="" disabled selected>Enter an API key above first</option>
                 </select>
-                <div class="hint">The AI model AgentRunr will use by default</div>
+                <div class="hint">You can change the specific model later in settings</div>
             </div>
         </div>
 
@@ -219,14 +219,14 @@
     </div>
 
     <script>
-        const modelOptions = {
-            openai: { value: 'openai:gpt-4.1', label: 'OpenAI — gpt-4.1' },
-            anthropic: { value: 'anthropic:claude-sonnet-4-20250514', label: 'Anthropic — claude-sonnet-4' },
-            mistral: { value: 'mistral:mistral-medium-latest', label: 'Mistral — mistral-medium-latest' }
+        const providerOptions = {
+            openai: { value: 'openai', label: 'OpenAI' },
+            anthropic: { value: 'anthropic', label: 'Anthropic' },
+            mistral: { value: 'mistral', label: 'Mistral AI' }
         };
 
-        function updateModelDropdown() {
-            const select = document.getElementById('defaultModel');
+        function updateProviderDropdown() {
+            const select = document.getElementById('defaultProvider');
             const openai = document.getElementById('openaiKey').value.trim();
             const anthropic = document.getElementById('anthropicKey').value.trim();
             const mistral = document.getElementById('mistralKey').value.trim();
@@ -235,9 +235,9 @@
             select.innerHTML = '';
 
             let hasOptions = false;
-            if (openai) { addOption(select, modelOptions.openai); hasOptions = true; }
-            if (anthropic) { addOption(select, modelOptions.anthropic); hasOptions = true; }
-            if (mistral) { addOption(select, modelOptions.mistral); hasOptions = true; }
+            if (openai) { addOption(select, providerOptions.openai); hasOptions = true; }
+            if (anthropic) { addOption(select, providerOptions.anthropic); hasOptions = true; }
+            if (mistral) { addOption(select, providerOptions.mistral); hasOptions = true; }
 
             if (!hasOptions) {
                 const opt = document.createElement('option');
@@ -246,9 +246,10 @@
                 opt.selected = true;
                 opt.textContent = 'Enter an API key above first';
                 select.appendChild(opt);
-            } else if (previousValue) {
+            } else {
                 select.value = previousValue;
                 if (!select.value) select.selectedIndex = 0;
+                select.options[select.selectedIndex].selected = true;
             }
         }
 
@@ -259,9 +260,9 @@
             select.appendChild(el);
         }
 
-        // Listen for API key changes to update model dropdown
+        // Listen for API key changes to update provider dropdown
         ['openaiKey', 'anthropicKey', 'mistralKey'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateModelDropdown);
+            document.getElementById(id).addEventListener('input', updateProviderDropdown);
         });
 
         async function loadStatus() {
@@ -324,9 +325,9 @@
             if (mistral) body.mistral = mistral;
             if (brave) body.braveApiKey = brave;
 
-            // Model
-            const model = document.getElementById('defaultModel').value;
-            if (model) body.defaultModel = model;
+            // Default provider
+            const provider = document.getElementById('defaultProvider').value;
+            if (provider) body.defaultModel = provider;
 
             // Telegram
             const telegram = document.getElementById('telegramToken').value.trim();
@@ -349,9 +350,11 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    msg.textContent = 'Saved and encrypted! Redirecting...';
+                    msg.textContent = 'Saved! Restarting...';
                     msg.className = 'setup-message success';
-                    setTimeout(() => window.location.href = '/', 1500);
+                    btn.disabled = true;
+                    setTimeout(() => window.location.href = '/', 5000);
+                    return;
                 } else {
                     msg.textContent = 'Error: ' + (data.error || 'Unknown error');
                     msg.className = 'setup-message error';

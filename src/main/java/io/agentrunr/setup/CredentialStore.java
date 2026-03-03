@@ -59,9 +59,10 @@ public class CredentialStore {
 
     /**
      * Returns true if the initial setup flow has been completed (workspace initialized).
+     * Also recognizes existing users who configured a workspace path before the flag was added.
      */
     public boolean isSetupCompleted() {
-        return "true".equals(credentials.get("setup_completed"));
+        return "true".equals(credentials.get("setup_completed")) || hasKey("workspace_path");
     }
 
     /**

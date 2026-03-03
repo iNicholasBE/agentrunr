@@ -1,7 +1,9 @@
 package io.agentrunr.setup;
 
+import io.agentrunr.channel.AdminController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +22,13 @@ public class SetupController {
     private static final Logger log = LoggerFactory.getLogger(SetupController.class);
     private final CredentialStore credentialStore;
     private final WorkspaceInitializer workspaceInitializer;
+    private final ConfigurableApplicationContext applicationContext;
 
-    public SetupController(CredentialStore credentialStore, WorkspaceInitializer workspaceInitializer) {
+    public SetupController(CredentialStore credentialStore, WorkspaceInitializer workspaceInitializer,
+                           ConfigurableApplicationContext applicationContext) {
         this.credentialStore = credentialStore;
         this.workspaceInitializer = workspaceInitializer;
+        this.applicationContext = applicationContext;
     }
 
     /**
@@ -87,9 +92,14 @@ public class SetupController {
 
             credentialStore.save();
 
-            log.info("Setup saved via web UI, workspace initialized at {}", workspacePath);
+            log.info("Setup saved via web UI, workspace initialized at {}. Scheduling restart...", workspacePath);
+
+            // Schedule restart so model beans get recreated with the new API keys
+            AdminController.scheduleRestart(applicationContext);
+
             return ResponseEntity.ok(Map.of(
                     "success", true,
+                    "restarting", true,
                     "providers", credentialStore.getProviderStatus()
             ));
         } catch (Exception e) {
