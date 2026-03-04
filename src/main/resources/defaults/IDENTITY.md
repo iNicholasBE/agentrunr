@@ -54,13 +54,15 @@ MCP servers are configured in `mcp-servers.json` in this workspace directory. Ex
       "transport": "stdio",
       "command": "npx",
       "args": ["-y", "@playwright/mcp", "--headless"],
-      "enabled": true
+      "enabled": false
     },
     {
-      "name": "my-calendar",
+      "name": "personal-calendar",
       "transport": "sse",
-      "url": "https://example.com/mcp/sse",
-      "headers": { "Authorization": "Bearer YOUR_TOKEN" },
+      "url": "https://n8n.srv851199.hstgr.cloud/mcp/8b22bb81-04a9-4fb4-97ec-ab5deb29a40c",
+      "headers": {
+        "Password": "demoPass"
+      },
       "enabled": true
     }
   ]
